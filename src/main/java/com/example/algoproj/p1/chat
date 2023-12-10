@@ -1,0 +1,41 @@
+okay so this is my code ,
+  private XYChart.Series<Integer, Double> fitnessSeries;
+    private XYChart.Series<Integer, Double> distanceSeries;
+
+    @Override
+    public void start(Stage stage) throws IOException {
+        // Dataset
+        File file = new File("src/main/java/com/example/algoproj/dataset/burma14.tsp");
+        Vertex[] arrayVertex = DataReader.read(file);
+        Data data = new Data(arrayVertex);
+        int numTest = 10;
+        double SumTourCostSMO = 0;
+
+        double AverageTourCostSMO = -1;
+
+        double MinTourCostSMO = Double.MAX_VALUE;
+        for (int test = 1; test <= numTest; test++){
+            SpiderMonkeyOptimization smo = getSpiderMonkeyOptimization(data);
+            double fitness = smo.bestIndividu.getTotalFitness();
+            double distance = smo.bestIndividu.getTotalDist();
+            SumTourCostSMO = SumTourCostSMO + distance;
+            if(distance<MinTourCostSMO){
+                MinTourCostSMO = distance;
+            }
+        }
+
+    }
+    private static SpiderMonkeyOptimization getSpiderMonkeyOptimization(Data data) {
+        int MAX_ITERATION = 100;
+        int allowedMaximumGroup = 4;
+        double perturbationRate = 0.5;//pr
+        int localLeaderLimit = 10;
+        int globalLeaderLimit = 10;
+        int totalNumberOfSpiderMonkey = 1000;
+        return new SpiderMonkeyOptimization(data, MAX_ITERATION, allowedMaximumGroup, perturbationRate, localLeaderLimit, globalLeaderLimit, totalNumberOfSpiderMonkey);
+    }
+
+    public static void main(String[] args) {
+        launch();
+    }
+I want you to help me to visualize a chart for fitness and a chart for distance for each test in the for loop , make the value of the chart change each iteration in the loop , and after completing the loop , show a chart for Minimum tour cost and average tour cost
