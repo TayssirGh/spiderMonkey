@@ -5,6 +5,7 @@ public class Vertex {
     double x;
     double y;
 
+
     public Vertex(String label, double x, double y) {
         this.label = label;
         this.x = x;

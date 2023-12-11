@@ -12,14 +12,15 @@ public class Data {
     }
 
 
-    public double extractDistance(int indexVertex1, int indexVertex2) {
+    public double extractPenalty(int indexVertex1, int indexVertex2) {
         double distance = -1;
         //validasi
         if (arrayVertex != null
                 && indexVertex1 >= 0
                 && indexVertex1 < arrayVertex.length
                 && indexVertex2 >= 0
-                && indexVertex2 < arrayVertex.length) {
+                && indexVertex2 < arrayVertex.length
+        ) {
             //jika valid
             Vertex v1 = arrayVertex[indexVertex1];
             Vertex v2 = arrayVertex[indexVertex2];
@@ -38,8 +39,7 @@ public class Data {
             double yy = y * y;//kuadrat y
 
             double xxyy = xx + yy;
-            double z = Math.sqrt(xxyy);
-            distance = z;
+            distance = Math.sqrt(xxyy);
         }
         return distance;
     }

@@ -97,10 +97,10 @@ public class Individu {
             for (int i = 1; i < monkey.length; i++) {
                 int indexVertex1 = monkey[i - 1];
                 int indexVertex2 = monkey[i];
-                double dist = data.extractDistance(indexVertex1, indexVertex2);
+                double dist = data.extractPenalty(indexVertex1, indexVertex2);
                 total += dist;
             }
-            this.totalDist = total;
+            this.totalDist = total/10;
         }
     }
 

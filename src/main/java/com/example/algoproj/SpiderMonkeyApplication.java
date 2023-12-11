@@ -25,13 +25,13 @@ public class SpiderMonkeyApplication extends Application {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         BarChart<String, Number> fitnessDistanceChart = new BarChart<>(xAxis, yAxis);
-        fitnessDistanceChart.setTitle("Fitness and Distance Values");
+        fitnessDistanceChart.setTitle("Fitness and Jobs Values");
         fitnessDistanceChart.setCategoryGap(20);
 
         NumberAxis xAxisLine = new NumberAxis();
         NumberAxis yAxisLine = new NumberAxis();
         LineChart<Number, Number> fitnessDistanceLineChart = new LineChart<>(xAxisLine, yAxisLine);
-        fitnessDistanceLineChart.setTitle("Fitness and Distance Curves");
+        fitnessDistanceLineChart.setTitle("Fitness and Jobs Curves");
         fitnessDistanceLineChart.setCreateSymbols(true);
 
 
@@ -40,14 +40,14 @@ public class SpiderMonkeyApplication extends Application {
         XYChart.Series<Number, Number> distanceLineSeries = new XYChart.Series<>();
         XYChart.Series<Number, Number> perturbationLineSeries = new XYChart.Series<>();
         fitnessLineSeries.setName("Fitness");
-        distanceLineSeries.setName("Distance");
+        distanceLineSeries.setName("Jobs");
         perturbationLineSeries.setName("Perturbation");
 
         XYChart.Series<String, Number> fitnessSeries = new XYChart.Series<>();
         XYChart.Series<String, Number> distanceSeries = new XYChart.Series<>();
         XYChart.Series<String, Number> perturbationSeries = new XYChart.Series<>();
         fitnessSeries.setName("Fitness");
-        distanceSeries.setName("Distance");
+        distanceSeries.setName("Jobs");
         perturbationSeries.setName("Perturbation");
 
 
@@ -59,20 +59,19 @@ public class SpiderMonkeyApplication extends Application {
         for (int test = 1; test <= numTest; test++) {
             SpiderMonkeyOptimization smo = getSpiderMonkeyOptimization(data);
             double fitness = smo.bestIndividu.getTotalFitness();
-            double fitnessScaled = fitness * scaleFactor;
             double perturbation = smo.getPr();
             double distance = smo.bestIndividu.getTotalDist();
             SumTourCostSMO = SumTourCostSMO + distance;
             if(distance<MinTourCostSMO){
                 MinTourCostSMO = distance;
             }
-            fitnessSeries.getData().add(new XYChart.Data<>(String.valueOf(test), fitnessScaled));
+            fitnessSeries.getData().add(new XYChart.Data<>(String.valueOf(test), fitness));
             distanceSeries.getData().add(new XYChart.Data<>(String.valueOf(test), distance));
             perturbationSeries.getData().add(new XYChart.Data<>(String.valueOf(test), perturbation));
             fitnessLineSeries.getData().add(new XYChart.Data<>(test, fitness));
             distanceLineSeries.getData().add(new XYChart.Data<>(test, distance));
             perturbationLineSeries.getData().add(new XYChart.Data<>(test, perturbation));
-            System.out.println("test "+test+"-> | fitness | : "+ fitness+"| perturbation| "+perturbation+"| distance |"+distance );
+            System.out.println("test "+test+"-> | fitness | : "+ fitness+"| perturbation| "+perturbation+"| Jobs |"+distance );
         }
 
         fitnessDistanceChart.getData().addAll(distanceSeries, fitnessSeries, perturbationSeries);
@@ -86,7 +85,7 @@ public class SpiderMonkeyApplication extends Application {
         stage.show();
 
         System.out.println("=======================================================================");
-        System.out.println(" AVERAGE DISTANCE [ " + AverageTourCostSMO + " ]");
+        System.out.println(" AVERAGE JOB [ " + AverageTourCostSMO + " ]");
         System.out.println("=======================================================================");
 
     }
