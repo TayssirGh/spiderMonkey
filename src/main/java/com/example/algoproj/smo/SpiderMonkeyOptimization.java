@@ -19,6 +19,10 @@ public class SpiderMonkeyOptimization {
     private final int GLL;//Global Leader Limit
     private final int N;//Total Number of Spider Monkeys
 
+    public double getPr() {
+        return pr;
+    }
+
     //Output
     public Individu bestIndividu = null;
 

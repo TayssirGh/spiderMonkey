@@ -11,12 +11,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
 
 public class SpiderMonkeyApplication extends Application {
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage)  {
         // Dataset
         File file = new File("src/main/java/com/example/algoproj/dataset/burma14.tsp");
         Vertex[] arrayVertex = DataReader.read(file);
@@ -39,13 +38,17 @@ public class SpiderMonkeyApplication extends Application {
 
         XYChart.Series<Number, Number> fitnessLineSeries = new XYChart.Series<>();
         XYChart.Series<Number, Number> distanceLineSeries = new XYChart.Series<>();
+        XYChart.Series<Number, Number> perturbationLineSeries = new XYChart.Series<>();
         fitnessLineSeries.setName("Fitness");
         distanceLineSeries.setName("Distance");
+        perturbationLineSeries.setName("Perturbation");
 
         XYChart.Series<String, Number> fitnessSeries = new XYChart.Series<>();
         XYChart.Series<String, Number> distanceSeries = new XYChart.Series<>();
+        XYChart.Series<String, Number> perturbationSeries = new XYChart.Series<>();
         fitnessSeries.setName("Fitness");
         distanceSeries.setName("Distance");
+        perturbationSeries.setName("Perturbation");
 
 
 
@@ -56,8 +59,8 @@ public class SpiderMonkeyApplication extends Application {
         for (int test = 1; test <= numTest; test++) {
             SpiderMonkeyOptimization smo = getSpiderMonkeyOptimization(data);
             double fitness = smo.bestIndividu.getTotalFitness();
-            double fitnessScaled = fitness * scaleFactor; // Scale the fitness value
-
+            double fitnessScaled = fitness * scaleFactor;
+            double perturbation = smo.getPr();
             double distance = smo.bestIndividu.getTotalDist();
             SumTourCostSMO = SumTourCostSMO + distance;
             if(distance<MinTourCostSMO){
@@ -65,12 +68,14 @@ public class SpiderMonkeyApplication extends Application {
             }
             fitnessSeries.getData().add(new XYChart.Data<>(String.valueOf(test), fitnessScaled));
             distanceSeries.getData().add(new XYChart.Data<>(String.valueOf(test), distance));
+            perturbationSeries.getData().add(new XYChart.Data<>(String.valueOf(test), perturbation));
             fitnessLineSeries.getData().add(new XYChart.Data<>(test, fitness));
             distanceLineSeries.getData().add(new XYChart.Data<>(test, distance));
-            System.out.println("test "+test+"-> fitness : "+ fitness+" distance "+distance);
+            perturbationLineSeries.getData().add(new XYChart.Data<>(test, perturbation));
+            System.out.println("test "+test+"-> | fitness | : "+ fitness+"| perturbation| "+perturbation+"| distance |"+distance );
         }
 
-        fitnessDistanceChart.getData().addAll(distanceSeries, fitnessSeries);
+        fitnessDistanceChart.getData().addAll(distanceSeries, fitnessSeries, perturbationSeries);
         fitnessDistanceLineChart.getData().addAll(fitnessLineSeries, distanceLineSeries);
         AverageTourCostSMO = SumTourCostSMO/numTest;
         VBox root = new VBox(fitnessDistanceChart, fitnessDistanceLineChart);
@@ -80,9 +85,9 @@ public class SpiderMonkeyApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        System.out.println("============================================================================");
-        System.out.println("MIN COST : [ " + MinTourCostSMO + " ]  || AVERAGE COST [ " + AverageTourCostSMO + " ]");
-        System.out.println("============================================================================");
+        System.out.println("=======================================================================");
+        System.out.println(" AVERAGE DISTANCE [ " + AverageTourCostSMO + " ]");
+        System.out.println("=======================================================================");
 
     }
 
