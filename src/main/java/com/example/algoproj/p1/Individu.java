@@ -15,7 +15,7 @@ public class Individu {
     public Individu clone() {
         Individu cloning = new Individu(data);
         cloning.monkey = this.monkey.clone();
-        this.hitungNilaiFitness();
+        this.calculateFitness();
         return cloning;
     }
 
@@ -90,23 +90,23 @@ public class Individu {
         }
     }
 
-    public void hitungTotalJarak() {
+    public void calculateTotalDist() {
         this.totalDist = -1;
         if (monkey != null) {
             double total = 0;
             for (int i = 1; i < monkey.length; i++) {
                 int indexVertex1 = monkey[i - 1];
                 int indexVertex2 = monkey[i];
-                double jarak = data.hitungJarak(indexVertex1, indexVertex2);
-                total += jarak;
+                double dist = data.extractDistance(indexVertex1, indexVertex2);
+                total += dist;
             }
             this.totalDist = total;
         }
     }
 
-    public void hitungNilaiFitness() {
+    public void calculateFitness() {
         this.totalFitness = 0;
-        this.hitungTotalJarak();
+        this.calculateTotalDist();
         if (this.totalDist > 0) {
             this.totalFitness = 1.0 / this.totalDist;
         }

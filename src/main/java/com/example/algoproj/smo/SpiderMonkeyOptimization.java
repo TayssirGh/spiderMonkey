@@ -68,7 +68,7 @@ public class SpiderMonkeyOptimization {
             for (int p = 0; p < populasi.length; p++) {
                 populasi[p] = new Individu(data);
                 populasi[p].generateRandomMonkey();
-                populasi[p].hitungNilaiFitness();
+                populasi[p].calculateFitness();
             }
         }
         return populasi;
@@ -97,7 +97,7 @@ public class SpiderMonkeyOptimization {
                 indexLL = getIndexLL(spiderMonkey, g, groupSize, k, indexLL, bFitness);
                 //set Local leader
                 LL[k] = spiderMonkey[indexLL].clone();
-                LL[k].hitungNilaiFitness();
+                LL[k].calculateFitness();
             }
         }
         return LL;
@@ -144,7 +144,7 @@ public class SpiderMonkeyOptimization {
                 }
             }
             GL = LL[indexGL].clone();
-            GL.hitungNilaiFitness();
+            GL.calculateFitness();
         }
         return GL;
     }
@@ -212,7 +212,6 @@ public class SpiderMonkeyOptimization {
                 }//end of for (int k = 0; k < g; k++)//end of Update Spider Monkey base on Local Leader
                 //Update Spider Monkey base on Global Leader---------------------
                 for (int k = 0; k < g; k++) {
-                    //System.out.println("g = "+g);
                     boolean inGroup = true;
                     int index = 0;
                     while (true) {
@@ -239,7 +238,7 @@ public class SpiderMonkeyOptimization {
                             int[][] SSi = Swap.mergeSwapSequence(GL_SMi, RSM_SMi);//Persamaan 6 di paper
                             int[][] BSSi = Swap.callBasicSwapSequence(SSi, panjangKromosom);
                             Individu SMnewi = Swap.add(SM[i], BSSi);//diperoleh individu baru;
-                            SMnewi.hitungNilaiFitness();
+                            SMnewi.calculateFitness();
                             if (SMnewi.getTotalFitness() > SM[i].getTotalFitness()) {
                                 SM[i] = SMnewi;
                             }
@@ -290,7 +289,7 @@ public class SpiderMonkeyOptimization {
                         //set Local leader
                         if (indexLL >= 0) {
                             LL[k] = spiderMonkey[indexLL].clone();
-                            LL[k].hitungNilaiFitness();
+                            LL[k].calculateFitness();
                             LLLc[k] = 0;
                         } else {
                             LLLc[k]++;
@@ -311,7 +310,7 @@ public class SpiderMonkeyOptimization {
                     }
                     if (indexGL >= 0) {
                         GL = LL[indexGL].clone();
-                        GL.hitungNilaiFitness();
+                        GL.calculateFitness();
                         GLLc = 0;
                     } else {
                         GLLc++;
@@ -338,7 +337,7 @@ public class SpiderMonkeyOptimization {
                             if (U >= pr) {
                                 spiderMonkey[i] = new Individu(data);
                                 spiderMonkey[i].generateRandomMonkey();
-                                spiderMonkey[i].hitungNilaiFitness();
+                                spiderMonkey[i].calculateFitness();
                             } else {
                                 //initialize SMi using EQ 13
                                 Individu SMi = spiderMonkey[i].clone();
@@ -362,7 +361,7 @@ public class SpiderMonkeyOptimization {
                                     SMi_new = SMi;
                                 }
                                 if (SMi_new != null) {
-                                    SMi_new.hitungNilaiFitness();
+                                    SMi_new.calculateFitness();
                                     spiderMonkey[i] = SMi_new;
                                 }
                             }

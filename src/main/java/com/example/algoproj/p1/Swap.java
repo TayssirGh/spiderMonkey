@@ -50,7 +50,7 @@ public class Swap {
                     int indexVertex1 = swapOperator[0];
                     int indexVertex2 = swapOperator[1];
                     newIndividu = swapOperation(newIndividu, indexVertex1, indexVertex2);
-                    newIndividu.hitungNilaiFitness();
+                    newIndividu.calculateFitness();
                     if (newIndividu.getTotalFitness() > bestFitness) {
                         best = newIndividu.clone();
                         bestFitness = newIndividu.getTotalFitness();

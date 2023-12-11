@@ -12,8 +12,8 @@ public class Data {
     }
 
 
-    public double hitungJarak(int indexVertex1, int indexVertex2) {
-        double jarak = -1;
+    public double extractDistance(int indexVertex1, int indexVertex2) {
+        double distance = -1;
         //validasi
         if (arrayVertex != null
                 && indexVertex1 >= 0
@@ -39,8 +39,8 @@ public class Data {
 
             double xxyy = xx + yy;
             double z = Math.sqrt(xxyy);
-            jarak = z;
+            distance = z;
         }
-        return jarak;
+        return distance;
     }
 }
