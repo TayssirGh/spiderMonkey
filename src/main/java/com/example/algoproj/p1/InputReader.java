@@ -6,27 +6,25 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class DataReader {
-    public static Vertex[] read(File file) {
-        Vertex[] arrayVertex = null;
+public class InputReader {
+    public static DataValues[] read(File file) {
+        DataValues[] arrayDataValues = null;
         try {
             FileReader reader = new FileReader(file);
             BufferedReader br = new BufferedReader(reader);
             String baris;
-            ArrayList<Vertex> listVertex = new ArrayList<>();
+            ArrayList<DataValues> listDataValues = new ArrayList<>();
 
             //read header data set
             boolean bacaVertex = false;
             while ((baris = br.readLine()) != null) {
 
-                //validasi baris------------------------
                 if (baris.startsWith("NODE_COORD_SECTION")) {
                     bacaVertex = true;
                 } else if (baris.equals("EOF")) {
                     bacaVertex = false;
                     break;
                 }
-                //end of validasi baris------------------------
                 if (bacaVertex) {
                     baris = baris.replaceAll("\\s+", " ");
                     if (baris.charAt(0) == ' ') {
@@ -37,23 +35,22 @@ public class DataReader {
                         String label = dBaris[0];
                         double x = Double.parseDouble(dBaris[1]);
                         double y = Double.parseDouble(dBaris[2]);
-                        Vertex v = new Vertex(label, x, y);
-                        listVertex.add(v);
-                        //System.out.println(v.toString());
+                        DataValues v = new DataValues(label, x, y);
+                        listDataValues.add(v);
                     }
                 }
             }//end of while
 
-            if (!listVertex.isEmpty()) {
+            if (!listDataValues.isEmpty()) {
                 //convert to arrayVertex
-                int n = listVertex.size();
-                arrayVertex = new Vertex[n];
-                for (int i = 0; i < arrayVertex.length; i++) {
-                    arrayVertex[i] = listVertex.get(i);
+                int n = listDataValues.size();
+                arrayDataValues = new DataValues[n];
+                for (int i = 0; i < arrayDataValues.length; i++) {
+                    arrayDataValues[i] = listDataValues.get(i);
                 }
             }
         } catch (IOException ignored) {
         }
-        return arrayVertex;
+        return arrayDataValues;
     }
 }

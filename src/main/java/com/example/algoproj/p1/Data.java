@@ -1,45 +1,33 @@
 package com.example.algoproj.p1;
 
 public class Data {
-    private Vertex[] arrayVertex = null;
+    private DataValues[] arrayDataValues = null;
 
-    public Data(Vertex[] arrayVertex) {
-        this.arrayVertex = arrayVertex;
+    public Data(DataValues[] arrayDataValues) {
+        this.arrayDataValues = arrayDataValues;
     }
 
-    public Vertex[] getArrayVertex() {
-        return arrayVertex;
+    public DataValues[] getArrayVertex() {
+        return arrayDataValues;
     }
 
 
-    public double extractPenalty(int indexVertex1, int indexVertex2) {
+    public double extractDistance(int indexVertex1, int indexVertex2) {
         double distance = -1;
-        //validasi
-        if (arrayVertex != null
+        if (arrayDataValues != null
                 && indexVertex1 >= 0
-                && indexVertex1 < arrayVertex.length
+                && indexVertex1 < arrayDataValues.length
                 && indexVertex2 >= 0
-                && indexVertex2 < arrayVertex.length
+                && indexVertex2 < arrayDataValues.length
         ) {
-            //jika valid
-            Vertex v1 = arrayVertex[indexVertex1];
-            Vertex v2 = arrayVertex[indexVertex2];
+            DataValues v1 = arrayDataValues[indexVertex1];
+            DataValues v2 = arrayDataValues[indexVertex2];
 
-            //hitung jarak euclid
-            double x1 = v1.x;
-            double y1 = v1.y;
 
-            double x2 = v2.x;
-            double y2 = v2.y;
 
-            double x = x1 - x2;//selisih x
-            double y = y1 - y2;//selisih y
 
-            double xx = x * x;//kuadrat x
-            double yy = y * y;//kuadrat y
+            distance = Math.sqrt(Math.pow(v1.x-v2.x, 2) + Math.pow(v1.y-v2.y, 2));
 
-            double xxyy = xx + yy;
-            distance = Math.sqrt(xxyy);
         }
         return distance;
     }

@@ -4,18 +4,18 @@ package com.example.algoproj.p1;
 import java.util.ArrayList;
 
 public class Swap {
-    public static Individu swapOperation(Individu individu, int indexVertex1, int indexVertex2) {
-        Individu newIndividu = null;
-        if (individu != null
-                && individu.getMonkey() != null
+    public static Monkey swapOperation(Monkey monkey, int indexVertex1, int indexVertex2) {
+        Monkey newMonkey = null;
+        if (monkey != null
+                && monkey.getMonkey() != null
                 && indexVertex1 >= 0
                 && indexVertex2 >= 0
-                && indexVertex1 < individu.getMonkey().length - 1
-                && indexVertex2 < individu.getMonkey().length - 1
+                && indexVertex1 < monkey.getMonkey().length - 1
+                && indexVertex2 < monkey.getMonkey().length - 1
                 && indexVertex1 != indexVertex2) {
 
-            newIndividu = individu.clone();
-            int[] kromosom = newIndividu.getMonkey();
+            newMonkey = monkey.clone();
+            int[] kromosom = newMonkey.getMonkey();
 
             //SWAP OPERATION    
             int temp = kromosom[indexVertex1];
@@ -26,51 +26,51 @@ public class Swap {
                 kromosom[kromosom.length - 1] = kromosom[0];
             }
         }
-        return newIndividu;
+        return newMonkey;
     }
-    public static Individu swapSequence(Individu individu, int[][] swapOperators) {
-        Individu newIndividu = null;
-        if (individu != null && swapOperators != null) {
-            newIndividu = individu.clone();
+    public static Monkey swapSequence(Monkey monkey, int[][] swapOperators) {
+        Monkey newMonkey = null;
+        if (monkey != null && swapOperators != null) {
+            newMonkey = monkey.clone();
             for (int[] swapOperator : swapOperators) {
                 int indexVertex1 = swapOperator[0];
                 int indexVertex2 = swapOperator[1];
-                newIndividu = swapOperation(newIndividu, indexVertex1, indexVertex2);
+                newMonkey = swapOperation(newMonkey, indexVertex1, indexVertex2);
             }
         }
-        return newIndividu;
+        return newMonkey;
     }
-    public static Individu bestSwap(Individu individu, int[][] swapOperators) {
-        Individu best = null;
-        if (individu != null) {
+    public static Monkey bestSwap(Monkey monkey, int[][] swapOperators) {
+        Monkey best = null;
+        if (monkey != null) {
             if (swapOperators != null) {
-                Individu newIndividu = individu.clone();
+                Monkey newMonkey = monkey.clone();
                 double bestFitness = -1;
                 for (int[] swapOperator : swapOperators) {
                     int indexVertex1 = swapOperator[0];
                     int indexVertex2 = swapOperator[1];
-                    newIndividu = swapOperation(newIndividu, indexVertex1, indexVertex2);
-                    newIndividu.calculateFitness();
-                    if (newIndividu.getTotalFitness() > bestFitness) {
-                        best = newIndividu.clone();
-                        bestFitness = newIndividu.getTotalFitness();
+                    newMonkey = swapOperation(newMonkey, indexVertex1, indexVertex2);
+                    newMonkey.calculateFitness();
+                    if (newMonkey.getTotalFitness() > bestFitness) {
+                        best = newMonkey.clone();
+                        bestFitness = newMonkey.getTotalFitness();
                     }
                 }
             } else {
-                best = individu.clone();
+                best = monkey.clone();
             }
         }
         return best;
     }
-    public static Individu add(Individu individu, int[][] swapOperators) {
-        return bestSwap(individu, swapOperators);
+    public static Monkey add(Monkey monkey, int[][] swapOperators) {
+        return bestSwap(monkey, swapOperators);
     }
-    public static int[][] subtract(Individu individu1, Individu individu2) {
+    public static int[][] subtract(Monkey monkey1, Monkey monkey2) {
         int[][] swapOperators = null;
         try {
             ArrayList<Point> listSwapOperator = new ArrayList<Point>();
-            int[] kromosom1 = individu1.getMonkey().clone();
-            int[] kromosom2 = individu2.getMonkey();
+            int[] kromosom1 = monkey1.getMonkey().clone();
+            int[] kromosom2 = monkey2.getMonkey();
             for (int i = 0; i < kromosom1.length; i++) {
                 int key = kromosom2[i];
                 if (key != kromosom1[i]) {
@@ -114,9 +114,9 @@ public class Swap {
                 for (int i = 0; i < kromosom1.length; i++) {
                     kromosom1[i] = i;
                 }
-                Individu individu1 = new Individu(kromosom1);
-                Individu individu2 = swapSequence(individu1, swapOperators);
-                basicSS = subtract(individu1, individu2);
+                Monkey monkey1 = new Monkey(kromosom1);
+                Monkey monkey2 = swapSequence(monkey1, swapOperators);
+                basicSS = subtract(monkey1, monkey2);
             }
         } catch (Exception e) {
             //e.printStackTrace();

@@ -1,8 +1,8 @@
 package com.example.algoproj.smo;
 import com.example.algoproj.p1.Data;
-import com.example.algoproj.p1.Individu;
+import com.example.algoproj.p1.Monkey;
 import com.example.algoproj.p1.Swap;
-import com.example.algoproj.p1.Vertex;
+import com.example.algoproj.p1.DataValues;
 import java.util.Random;
 
 public class SpiderMonkeyOptimization {
@@ -11,22 +11,20 @@ public class SpiderMonkeyOptimization {
     private Data data = null;
 
     //Parameter SMO
-    private final int panjangKromosom;
-    private final int   I;//Total Number of Iterations
-    private int MG;//Allowed Maximum Group
-    private final double pr;//Perturbation Rate
-    private final int LLL;//Local Leader Limit
-    private final int GLL;//Global Leader Limit
-    private final int N;//Total Number of Spider Monkeys
+    private final int seqMonkey;
+    private final int numberOfIterations;
+    private int maxGroup;
+    private final double perturbationRate;
+    private final int localLeaderLimit;
+    private final int globalLeaderLimit;
+    private final int nSpiderMonkey;
 
     public double getPr() {
-        return pr;
+        return perturbationRate;
     }
 
-    //Output
-    public Individu bestIndividu = null;
+    public Monkey bestMonkey = null;
 
-    //Random
     private final Random random = new Random();
 
     public SpiderMonkeyOptimization(
@@ -35,43 +33,39 @@ public class SpiderMonkeyOptimization {
 
         // dataset
         this.data = data;
-        //Array of Vertices/Cities
-        Vertex[] arrayVertex = data.getArrayVertex();
-        int nVertex = arrayVertex.length;
-        this.panjangKromosom = nVertex + 1;
-        //System.out.println(data.toString());
+        DataValues[] arrayDataValues = data.getArrayVertex();
+        int nVertex = arrayDataValues.length;
+        this.seqMonkey = nVertex + 1;
 
-        //set parameters SMO
-        this.I = MAX_ITERATION;
-        this.MG = allowedMaximumGroup;
-        this.pr = perturbationRate;
-        this.LLL = localLeaderLimit;
-        this.GLL = globalLeaderLimit;
-        this.N = totalNumberOfSpiderMonkey;
+        this.numberOfIterations = MAX_ITERATION;
+        this.maxGroup = allowedMaximumGroup;
+        this.perturbationRate = perturbationRate;
+        this.localLeaderLimit = localLeaderLimit;
+        this.globalLeaderLimit = globalLeaderLimit;
+        this.nSpiderMonkey = totalNumberOfSpiderMonkey;
 
-        //RUN SMO
         this.run();
     }
 
     public boolean validateParameter() {
         boolean valid = true;
-        if (this.MG >= this.N) {
-            this.MG = this.N / 2;
+        if (this.maxGroup >= this.nSpiderMonkey) {
+            this.maxGroup = this.nSpiderMonkey / 2;
         }
         return valid;
     }
 
-    public Individu[] generateRandomPopulation() {
-        Individu[] populasi = null;
-        if (this.data != null && this.N > 0) {
-            populasi = new Individu[this.N];
-            for (int p = 0; p < populasi.length; p++) {
-                populasi[p] = new Individu(data);
-                populasi[p].generateRandomMonkey();
-                populasi[p].calculateFitness();
+    public Monkey[] generatPopulation() {
+        Monkey[] population = null;
+        if (this.data != null && this.nSpiderMonkey > 0) {
+            population = new Monkey[this.nSpiderMonkey];
+            for (int p = 0; p < population.length; p++) {
+                population[p] = new Monkey(data);
+                population[p].generateRandomMonkey();
+                population[p].calculateFitness();
             }
         }
-        return populasi;
+        return population;
     }
 
     private int randomBetween(int min, int max) {
@@ -85,11 +79,11 @@ public class SpiderMonkeyOptimization {
     }
 
 
-    public Individu[] selectLocalLeader(Individu[] spiderMonkey, int g) {
-        Individu[] LL = null;
+    public Monkey[] selectLocalLeader(Monkey[] spiderMonkey, int g) {
+        Monkey[] LL = null;
         if (spiderMonkey != null && g > 0) {
-            int groupSize = (int) Math.floor((double) N / (double) g);
-            LL = new Individu[g];
+            int groupSize = (int) Math.floor((double) nSpiderMonkey / (double) g);
+            LL = new Monkey[g];
             for (int k = 0; k < g; k++) {
                 LL[k] = null;
                 int indexLL = -1;
@@ -103,7 +97,7 @@ public class SpiderMonkeyOptimization {
         return LL;
     }
 
-    private int getIndexLL(Individu[] spiderMonkey, int g, int groupSize, int k, int indexLL, double bFitness) {
+    private int getIndexLL(Monkey[] spiderMonkey, int g, int groupSize, int k, int indexLL, double bFitness) {
         boolean inGroup = true;
         int index = 0;
         while (true) {
@@ -113,7 +107,7 @@ public class SpiderMonkeyOptimization {
                 break;
             }
             //System.out.println("TRACE " + groupSize + "*" + k + "+" + index + "=" + i);
-            Individu SMi = spiderMonkey[i];
+            Monkey SMi = spiderMonkey[i];
             if (SMi.getTotalFitness() > bFitness) {
                 bFitness = SMi.getTotalFitness();
                 indexLL = i;
@@ -131,8 +125,8 @@ public class SpiderMonkeyOptimization {
         return indexLL;
     }
 
-    public Individu selectGlobalLeader(Individu[] LL) {
-        Individu GL = null;
+    public Monkey selectGlobalLeader(Monkey[] LL) {
+        Monkey GL = null;
         if (LL != null) {
             int indexGL = -1;
             double bestFitness = 0;
@@ -149,14 +143,14 @@ public class SpiderMonkeyOptimization {
         return GL;
     }
 
-    public Individu[] updateSpiderMonkeyBaseOnLocalLeader(Individu[] spiderMonkey, Individu[] LL, Individu GL) {
-        Individu[] SM = null;
+    public Monkey[] updateSpiderMonkeyBaseOnLocalLeader(Monkey[] spiderMonkey, Monkey[] LL, Monkey GL) {
+        Monkey[] SM = null;
         if (spiderMonkey != null && LL != null && GL != null) {
             double min_cost = Double.MAX_VALUE;
-            SM = new Individu[spiderMonkey.length];
+            SM = new Monkey[spiderMonkey.length];
             int g = LL.length;
             if (g > 0) {
-                int groupSize = (int) Math.floor((double) N / (double) g);
+                int groupSize = (int) Math.floor((double) nSpiderMonkey / (double) g);
                 //Update Spider Monkey base on Local Leader---------------------
                 for (int k = 0; k < g; k++) {
                     boolean inGroup = true;
@@ -168,7 +162,7 @@ public class SpiderMonkeyOptimization {
                             break;
                         }
                         double U = random.nextDouble();
-                        if (U >= pr) {
+                        if (U >= perturbationRate) {
                             int MIN = k * groupSize;
                             int MAX = (k + 1) * groupSize - 1;
                             if (spiderMonkey.length - 1 - MAX < groupSize) {
@@ -178,23 +172,22 @@ public class SpiderMonkeyOptimization {
                             while (indexRandom == i) {
                                 indexRandom = randomBetween(MIN, MAX);
                             }
-                            Individu LLk = LL[k];//LocalLeader ke k
+                            Monkey LLk = LL[k];//LocalLeader ke k
                             SM[i] = spiderMonkey[i];
-                            Individu RSM = spiderMonkey[indexRandom];
+                            Monkey RSM = spiderMonkey[indexRandom];
 
                             int[][] LLk_SMi = Swap.subtract(LLk, SM[i]);//LLk - SMi
                             int[][] RSM_SMi = Swap.subtract(RSM, SM[i]);//RSM - SMi
 
-                            int[][] SSi = Swap.mergeSwapSequence(LLk_SMi, RSM_SMi);//Persamaan 6 di paper
-                            int[][] BSSi = Swap.callBasicSwapSequence(SSi, panjangKromosom);
-                            Individu SMnewi = Swap.add(SM[i], BSSi);//diperoleh individu baru;
+                            int[][] SSi = Swap.mergeSwapSequence(LLk_SMi, RSM_SMi);
+                            int[][] BSSi = Swap.callBasicSwapSequence(SSi, seqMonkey);
+                            Monkey SMnewi = Swap.add(SM[i], BSSi);
                             if (SMnewi.getTotalFitness() > SM[i].getTotalFitness()) {
                                 SM[i] = SMnewi;
                             }
                         } else {
                             SM[i] = spiderMonkey[i];
                         }
-                        //check min_cost
                         if (SM[i].getTotalDist() >= 0 && spiderMonkey[index].getTotalDist() < min_cost) {
                             min_cost = SM[i].getTotalDist();
                         }
@@ -209,7 +202,7 @@ public class SpiderMonkeyOptimization {
                             }
                         }
                     }
-                }//end of for (int k = 0; k < g; k++)//end of Update Spider Monkey base on Local Leader
+                }
                 //Update Spider Monkey base on Global Leader---------------------
                 for (int k = 0; k < g; k++) {
                     boolean inGroup = true;
@@ -230,14 +223,14 @@ public class SpiderMonkeyOptimization {
                             while (indexRandom == i) {
                                 indexRandom = randomBetween(MIN, MAX);
                             }
-                            Individu RSM = SM[indexRandom];
+                            Monkey RSM = SM[indexRandom];
 
                             int[][] GL_SMi = Swap.subtract(GL, SM[i]);//LLk - SMi
                             int[][] RSM_SMi = Swap.subtract(RSM, SM[i]);//RSM - SMi
 
-                            int[][] SSi = Swap.mergeSwapSequence(GL_SMi, RSM_SMi);//Persamaan 6 di paper
-                            int[][] BSSi = Swap.callBasicSwapSequence(SSi, panjangKromosom);
-                            Individu SMnewi = Swap.add(SM[i], BSSi);//diperoleh individu baru;
+                            int[][] SSi = Swap.mergeSwapSequence(GL_SMi, RSM_SMi);
+                            int[][] BSSi = Swap.callBasicSwapSequence(SSi, seqMonkey);
+                            Monkey SMnewi = Swap.add(SM[i], BSSi);
                             SMnewi.calculateFitness();
                             if (SMnewi.getTotalFitness() > SM[i].getTotalFitness()) {
                                 SM[i] = SMnewi;
@@ -264,65 +257,60 @@ public class SpiderMonkeyOptimization {
     public void run() {
         //Variables
         if (validateParameter()) {
-            //Generate Random population
-            Individu[] spiderMonkey = generateRandomPopulation();//create N SpiderMonkey
-            int g = 1;//initially consider all SM into one group
-            //Select local leader and global leader
-            Individu[] LL = selectLocalLeader(spiderMonkey, g);
-            Individu GL = selectGlobalLeader(LL);//Global Leader
-            //Limit
-            int[] LLLc = new int[LL.length];//Local Leader Limit
-            int GLLc = 0;//Global Leader Limit Count
+            Monkey[] spiderMonkey = generatPopulation();
+            int g = 1;
+            Monkey[] localLeader = selectLocalLeader(spiderMonkey, g);
+            Monkey globalLeader = selectGlobalLeader(localLeader);
+            int[] LLLc = new int[localLeader.length];
+            int GLLc = 0;
 
             
             //update phase 
-            for (int t = 1; t <= I; t++) {
-                spiderMonkey = updateSpiderMonkeyBaseOnLocalLeader(spiderMonkey, LL, GL);
+            for (int t = 1; t <= numberOfIterations; t++) {
+                spiderMonkey = updateSpiderMonkeyBaseOnLocalLeader(spiderMonkey, localLeader, globalLeader);
 
                 //Update phase local leader------------------------------------
                 if (spiderMonkey != null && g > 0) {
-                    int groupSize = (int) Math.floor((double) N / (double) g);
+                    int groupSize = (int) Math.floor((double) nSpiderMonkey / (double) g);
                     for (int k = 0; k < g; k++) {
                         int indexLL = -1;
-                        double bFitness = LL[k].getTotalFitness();
+                        double bFitness = localLeader[k].getTotalFitness();
                         indexLL = getIndexLL(spiderMonkey, g, groupSize, k, indexLL, bFitness);
                         //set Local leader
                         if (indexLL >= 0) {
-                            LL[k] = spiderMonkey[indexLL].clone();
-                            LL[k].calculateFitness();
+                            localLeader[k] = spiderMonkey[indexLL].clone();
+                            localLeader[k].calculateFitness();
                             LLLc[k] = 0;
                         } else {
                             LLLc[k]++;
                         }
                     }
                 }
-                //end of update phase local leader------------------------------
 
                 //Update phase global leader------------------------------------
-                if (LL != null) {
+                if (localLeader != null) {
                     int indexGL = -1;
-                    double bestFitness = GL.getTotalFitness();
+                    double bestFitness = globalLeader.getTotalFitness();
                     for (int k = 0; k < g; k++) {
-                        if (LL[k].getTotalFitness() > bestFitness) {
-                            bestFitness = LL[k].getTotalFitness();
+                        if (localLeader[k].getTotalFitness() > bestFitness) {
+                            bestFitness = localLeader[k].getTotalFitness();
                             indexGL = k;
                         }
                     }
                     if (indexGL >= 0) {
-                        GL = LL[indexGL].clone();
-                        GL.calculateFitness();
+                        globalLeader = localLeader[indexGL].clone();
+                        globalLeader.calculateFitness();
                         GLLc = 0;
                     } else {
                         GLLc++;
                     }
                 }
-                //end of update phase global leader-----------------------------
 
                 //Decision Phase Local Leader-----------------------------------
                 if (spiderMonkey != null && g > 0) {
-                    int groupSize = (int) Math.floor((double) N / (double) g);
+                    int groupSize = (int) Math.floor((double) nSpiderMonkey / (double) g);
                     for (int k = 0; k < g; k++) {
-                        if (LLLc[k] > LLL) {
+                        if (LLLc[k] > localLeaderLimit) {
                             LLLc[k] = 0;
                         }
                         boolean inGroup = true;
@@ -334,25 +322,25 @@ public class SpiderMonkeyOptimization {
                                 break;
                             }
                             double U = random.nextDouble();
-                            if (U >= pr) {
-                                spiderMonkey[i] = new Individu(data);
+                            if (U >= perturbationRate) {
+                                spiderMonkey[i] = new Monkey(data);
                                 spiderMonkey[i].generateRandomMonkey();
                                 spiderMonkey[i].calculateFitness();
                             } else {
                                 //initialize SMi using EQ 13
-                                Individu SMi = spiderMonkey[i].clone();
+                                Monkey SMi = spiderMonkey[i].clone();
                                 U = random.nextDouble();
-                                Individu SMi_A = null;
-                                Individu SMi_B = null;
-                                if (U >= pr) {
-                                    int[][] ss = Swap.subtract(GL, SMi);
+                                Monkey SMi_A = null;
+                                Monkey SMi_B = null;
+                                if (U >= perturbationRate) {
+                                    int[][] ss = Swap.subtract(globalLeader, SMi);
                                     SMi_A = Swap.add(SMi, ss);
                                 }
-                                if (U >= pr) {
-                                    int[][] ss = Swap.subtract(SMi, LL[k]);
+                                if (U >= perturbationRate) {
+                                    int[][] ss = Swap.subtract(SMi, localLeader[k]);
                                     SMi_B = Swap.add(SMi_A, ss);
                                 }
-                                Individu SMi_new = null;
+                                Monkey SMi_new = null;
                                 if (SMi_B != null) {
                                     SMi_new = SMi_B;
                                 } else if (SMi_A != null) {
@@ -380,9 +368,9 @@ public class SpiderMonkeyOptimization {
                 //End of Decision Phase Local Leader----------------------------
 
                 //Decision Phase Global Leader----------------------------------
-                if (GLLc > GLL) {
+                if (GLLc > globalLeaderLimit) {
                     //System.out.println("DECISION PHASE");
-                    if (g < MG) {
+                    if (g < maxGroup) {
                         g++;//
                     } else {
                         g = 1;
@@ -393,15 +381,15 @@ public class SpiderMonkeyOptimization {
                     GLLc = 0;//Global Leader Limit
 
                     //Select local leader and global leader
-                    LL = selectLocalLeader(spiderMonkey, g);
-                    GL = selectGlobalLeader(LL);//Global Leader
+                    localLeader = selectLocalLeader(spiderMonkey, g);
+                    globalLeader = selectGlobalLeader(localLeader);//Global Leader
 
                 }//End of Decision Phase Global Leader---------------------------
 
             }
 
             //System.out.println("Global Leader: " + GL.toString());
-            bestIndividu = GL;
+            bestMonkey = globalLeader;
 
         }
     }//end of run()
