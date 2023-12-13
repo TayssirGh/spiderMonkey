@@ -1,7 +1,7 @@
 package com.example.algoproj.p1;
 
 public class Data {
-    private DataValues[] arrayDataValues = null;
+    private final DataValues[] arrayDataValues;
 
     public Data(DataValues[] arrayDataValues) {
         this.arrayDataValues = arrayDataValues;
@@ -22,10 +22,6 @@ public class Data {
         ) {
             DataValues v1 = arrayDataValues[indexVertex1];
             DataValues v2 = arrayDataValues[indexVertex2];
-
-
-
-
             distance = Math.sqrt(Math.pow(v1.x-v2.x, 2) + Math.pow(v1.y-v2.y, 2));
 
         }

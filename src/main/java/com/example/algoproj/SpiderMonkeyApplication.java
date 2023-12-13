@@ -35,7 +35,6 @@ public class SpiderMonkeyApplication extends Application {
         fitnessDistanceLineChart.setCreateSymbols(true);
 
 
-
         XYChart.Series<Number, Number> fitnessLineSeries = new XYChart.Series<>();
         XYChart.Series<Number, Number> distanceLineSeries = new XYChart.Series<>();
         XYChart.Series<Number, Number> perturbationLineSeries = new XYChart.Series<>();
@@ -53,7 +52,7 @@ public class SpiderMonkeyApplication extends Application {
 
 
         double SumTourCostSMO = 0;
-        double AverageTourCostSMO = -1;
+        double AverageTourCostSMO = 0;
         double MinTourCostSMO = Double.MAX_VALUE;
         double scaleFactor = 100;
         for (int test = 1; test <= numTest; test++) {
@@ -71,7 +70,8 @@ public class SpiderMonkeyApplication extends Application {
             fitnessLineSeries.getData().add(new XYChart.Data<>(test, fitness));
             distanceLineSeries.getData().add(new XYChart.Data<>(test, distance));
             perturbationLineSeries.getData().add(new XYChart.Data<>(test, perturbation));
-            System.out.println("test "+test+"-> | fitness | : "+ fitness+"| perturbation| "+perturbation+"| Distance |"+distance );
+            System.out.println("test "+test+"-> \n\t| fitness | : "+ fitness+"\n\t| pr| : "+perturbation+"\n\t| Distance |"+distance );
+
         }
 
         fitnessDistanceChart.getData().addAll(distanceSeries, fitnessSeries, perturbationSeries);
@@ -84,9 +84,9 @@ public class SpiderMonkeyApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        System.out.println("=======================================================================");
-        System.out.println(" AVERAGE DISTANCE VALUE [ " + AverageTourCostSMO + " ]");
-        System.out.println("=======================================================================");
+        System.out.println("==========================================================================================");
+        System.out.println("                        AVERAGE DISTANCE VALUE [ " + AverageTourCostSMO + " ]");
+        System.out.println("==========================================================================================");
 
     }
 
@@ -95,11 +95,11 @@ public class SpiderMonkeyApplication extends Application {
     private static SpiderMonkeyOptimization getSpiderMonkeyOptimization(Data data) {
         int MAX_ITERATION = 100;
         int allowedMaximumGroup = 4;
-        double perturbationRate = 0.91;//pr
+        double probability = 0.91;//pr
         int localLeaderLimit = 10;
         int globalLeaderLimit = 10;
         int totalNumberOfSpiderMonkey = 1000;
-        return new SpiderMonkeyOptimization(data, MAX_ITERATION, allowedMaximumGroup, perturbationRate, localLeaderLimit, globalLeaderLimit, totalNumberOfSpiderMonkey);
+        return new SpiderMonkeyOptimization(data, MAX_ITERATION, allowedMaximumGroup, probability, localLeaderLimit, globalLeaderLimit, totalNumberOfSpiderMonkey);
     }
 
     public static void main(String[] args) {

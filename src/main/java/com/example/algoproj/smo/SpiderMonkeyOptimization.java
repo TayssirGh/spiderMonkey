@@ -14,13 +14,13 @@ public class SpiderMonkeyOptimization {
     private final int seqMonkey;
     private final int numberOfIterations;
     private int maxGroup;
-    private final double perturbationRate;
+    private final double probability;
     private final int localLeaderLimit;
     private final int globalLeaderLimit;
     private final int nSpiderMonkey;
 
     public double getPr() {
-        return perturbationRate;
+        return probability;
     }
 
     public Monkey bestMonkey = null;
@@ -28,10 +28,9 @@ public class SpiderMonkeyOptimization {
     private final Random random = new Random();
 
     public SpiderMonkeyOptimization(
-            Data data, int MAX_ITERATION, int allowedMaximumGroup, double perturbationRate,
+            Data data, int MAX_ITERATION, int allowedMaximumGroup, double probability,
             int localLeaderLimit, int globalLeaderLimit, int totalNumberOfSpiderMonkey) {
 
-        // dataset
         this.data = data;
         DataValues[] arrayDataValues = data.getArrayVertex();
         int nVertex = arrayDataValues.length;
@@ -39,7 +38,7 @@ public class SpiderMonkeyOptimization {
 
         this.numberOfIterations = MAX_ITERATION;
         this.maxGroup = allowedMaximumGroup;
-        this.perturbationRate = perturbationRate;
+        this.probability = probability;
         this.localLeaderLimit = localLeaderLimit;
         this.globalLeaderLimit = globalLeaderLimit;
         this.nSpiderMonkey = totalNumberOfSpiderMonkey;
@@ -70,7 +69,6 @@ public class SpiderMonkeyOptimization {
 
     private int randomBetween(int min, int max) {
         if (min >= max) {
-            //tukar
             int temp = min;
             min = max;
             max = temp;
@@ -162,7 +160,7 @@ public class SpiderMonkeyOptimization {
                             break;
                         }
                         double U = random.nextDouble();
-                        if (U >= perturbationRate) {
+                        if (U >= probability) {
                             int MIN = k * groupSize;
                             int MAX = (k + 1) * groupSize - 1;
                             if (spiderMonkey.length - 1 - MAX < groupSize) {
@@ -322,7 +320,7 @@ public class SpiderMonkeyOptimization {
                                 break;
                             }
                             double U = random.nextDouble();
-                            if (U >= perturbationRate) {
+                            if (U >= probability) {
                                 spiderMonkey[i] = new Monkey(data);
                                 spiderMonkey[i].generateRandomMonkey();
                                 spiderMonkey[i].calculateFitness();
@@ -332,11 +330,11 @@ public class SpiderMonkeyOptimization {
                                 U = random.nextDouble();
                                 Monkey SMi_A = null;
                                 Monkey SMi_B = null;
-                                if (U >= perturbationRate) {
+                                if (U >= probability) {
                                     int[][] ss = Swap.subtract(globalLeader, SMi);
                                     SMi_A = Swap.add(SMi, ss);
                                 }
-                                if (U >= perturbationRate) {
+                                if (U >= probability) {
                                     int[][] ss = Swap.subtract(SMi, localLeader[k]);
                                     SMi_B = Swap.add(SMi_A, ss);
                                 }
