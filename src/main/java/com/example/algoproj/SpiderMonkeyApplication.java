@@ -40,14 +40,14 @@ public class SpiderMonkeyApplication extends Application {
         XYChart.Series<Number, Number> perturbationLineSeries = new XYChart.Series<>();
         fitnessLineSeries.setName("Fitness");
         distanceLineSeries.setName("Distance");
-        perturbationLineSeries.setName("Perturbation");
+        perturbationLineSeries.setName("pr");
 
         XYChart.Series<String, Number> fitnessSeries = new XYChart.Series<>();
         XYChart.Series<String, Number> distanceSeries = new XYChart.Series<>();
         XYChart.Series<String, Number> perturbationSeries = new XYChart.Series<>();
         fitnessSeries.setName("Fitness Scaled");
         distanceSeries.setName("Distance");
-        perturbationSeries.setName("Perturbation");
+        perturbationSeries.setName("pr");
 
 
 
@@ -95,7 +95,7 @@ public class SpiderMonkeyApplication extends Application {
     private static SpiderMonkeyOptimization getSpiderMonkeyOptimization(Data data) {
         int MAX_ITERATION = 100;
         int allowedMaximumGroup = 4;
-        double probability = 0.91;//pr
+        double probability = 0.78;//pr
         int localLeaderLimit = 10;
         int globalLeaderLimit = 10;
         int totalNumberOfSpiderMonkey = 1000;
