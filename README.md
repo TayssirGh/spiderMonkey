@@ -11,7 +11,7 @@ The SpiderMonkeyOptimization algorithm (SMO) is a nature-inspired optimization a
 ## Usage
 1. Clone the repository to your local machine.
 2. Open the project in your preferred Java development environment (e.g., IntelliJ IDEA, Eclipse).
-3. Run the `Main.java` file to execute the SpiderMonkeyOptimization algorithm.
+3. Run the `SpiderMonkeyApplication.java` file to execute the SpiderMonkeyOptimization algorithm.
 4. Follow the prompts to input parameters and observe the algorithm's progress through the JavaFX visualization.
 
 ## Requirements
